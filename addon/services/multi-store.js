@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import DS from 'ember-data';
-import getOwner from 'ember-getowner-polyfill';
 
 export default Ember.Service.extend({
     /**
@@ -40,7 +39,7 @@ export default Ember.Service.extend({
         const storeNames = Ember.get(this, 'storeNames');
 
         if (storeNames.indexOf(name) === -1) {
-            getOwner(this).register(`store:${name}`,
+            Ember.getOwner(this).register(`store:${name}`,
                 DS.Store.extend({
                     name: name
                 })
@@ -62,7 +61,7 @@ export default Ember.Service.extend({
         const storeNames = Ember.get(this, 'storeNames');
 
         if (storeNames.indexOf(name) !== -1) {
-            getOwner(this).unregister(`store:${name}`);
+            Ember.getOwner(this).unregister(`store:${name}`);
             storeNames.removeObject(name);
             return true;
         }
@@ -77,7 +76,7 @@ export default Ember.Service.extend({
      * @returns {boolean}
      */
     getStore(name) {
-        return getOwner(this).lookup(`store:${name}`);
+        return Ember.getOwner(this).lookup(`store:${name}`);
     },
 
     /**
@@ -91,9 +90,9 @@ export default Ember.Service.extend({
     switchInspectorStore(name) {
         const store = name ?
             this.getStore(name) :
-            getOwner(this).lookup('service:store');
+            Ember.getOwner(this).lookup('service:store');
 
-        let dataAdapter = getOwner(this).lookup('data-adapter:main');
+        let dataAdapter = Ember.getOwner(this).lookup('data-adapter:main');
         dataAdapter.set('store', store);
     }
 });
